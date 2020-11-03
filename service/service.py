@@ -50,7 +50,10 @@ class Retailers(object):
     def run(self):
         """
         Run the application
-        It will check, if the
+        It will check, if the records are same with the current month
+        If it is same:
+            It will check for the full consumption of the expenditure
+            It will check for the half consumption of the expenditure
         """
         while True:
             try:
