@@ -2,6 +2,7 @@ import threading
 import time
 from time import strftime
 from datetime import date
+from utility.constants import SHOP
 
 from database.database import Database
 
@@ -40,14 +41,16 @@ class Retailers(object):
             return False
 
     @staticmethod
-    def _notify(notification_msg, shop_id, current_date, budget, expenditure):
-        print('Notification is sent for {} for the shop id {} '
+    def _notify(notification_msg, current_date, shop_id, budget, expenditure):
+        print('Notification is sent on {} for {} for the shop id {} '
               'with budget {} and expenditure {} '
-              'and consumption percentage {}'.format(notification_msg, shop_id, budget, expenditure, str((expenditure/budget)*100)))
+              'and consumption percentage {}'.
+              format(current_date, notification_msg, shop_id, budget, expenditure, str((expenditure/budget)*100)))
 
     def run(self):
         """
         Run the application
+        It will check, if the
         """
         while True:
             try:
@@ -55,16 +58,16 @@ class Retailers(object):
                 for item in self.database.get_shops_data():
                     if int(current_month) == int(self._get_month_from_database(item[1])):
                         if self._check_full_budget_consumption(
-                                int(item[2]),
-                                int(item[3])
+                                int(item[SHOP.BUDGET]),
+                                int(item[SHOP.EXPENDITURE])
                         ):
                             if not self.database.check_if_processed(item[0]):
                                 self._notify(
                                     "Full consumption of allotted budget",
                                     date.today(),
-                                    item[1],
-                                    int(item[2]),
-                                    int(item[3])
+                                    item[SHOP.SHOP_ID],
+                                    int(item[SHOP.BUDGET]),
+                                    int(item[SHOP.EXPENDITURE])
                                 )
                                 self.database.set_shop_offline(item[0])
 
@@ -75,9 +78,9 @@ class Retailers(object):
                             self._notify(
                                 "Half Consumption of allotted budget",
                                 date.today(),
-                                item[1],
-                                int(item[2]),
-                                int(item[3])
+                                item[SHOP.SHOP_ID],
+                                int(item[SHOP.BUDGET]),
+                                int(item[SHOP.EXPENDITURE])
                             )
 
                 time.sleep(self.interval)

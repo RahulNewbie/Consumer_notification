@@ -67,7 +67,6 @@ class Database:
                         "WHERE a_id = ? and processed = ?",
                         (shop_id, 1,))
             rows = cur.fetchall()
-            print(rows)
             if len(rows) > 1:
                 return True
             else:
